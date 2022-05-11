@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+
+  db_material:
+    image: mariadb:latest
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=secret
+      - MARIADB_DATABASE=db_material
+    volumes:
+      - db_material:/var/lib/mysql
+      - ./db:/etc/mysql/conf.d/
+    expose:
+      - 3306
+    ports:
+      - 33060:3306
+    networks:
+      - cws
+
+  service-material:
+    image: lecheynata/node16:latest
+    working_dir: /usr/src/app
+    volumes:
+      - ./service-material:/usr/src/app
+      - /app/node_modules
+    env_file: './service-material/api.env'
+    command: yarn start
+    ports:
+      - 4000:4000
+    networks:
+      - cws
+    depends_on:
+      - db_material
+
+networks:
+  cws:
+
+volumes:
+  db_material:

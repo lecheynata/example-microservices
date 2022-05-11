@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Material {
+  id        Int      @id @default(autoincrement())
+  name      String
+  type      Type     @relation(fields: [typeId], references: [id])
+  typeId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  prices Price[]
+}
+
+model Type {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  materials Material[]
+}
+
+model Price {
+  id         Int      @id @default(autoincrement())
+  amount     Float    @db.Double
+  material   Material @relation(fields: [materialId], references: [id])
+  materialId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
