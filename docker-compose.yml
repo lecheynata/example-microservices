@@ -19,11 +19,12 @@ services:
       - cws
 
   service-material:
-    image: lecheynata/node16:latest
+    build:
+      context: ./service-material
+      dockerfile: Dockerfile
     working_dir: /usr/src/app
     volumes:
       - ./service-material:/usr/src/app
-      - /app/node_modules
     env_file: './service-material/api.env'
     command: yarn start
     ports:
